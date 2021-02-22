@@ -1,0 +1,62 @@
+<script type="text/javascript">
+    RED.nodes.registerType('zoom-session', {
+      category: 'config',
+      color: '#8BBDD9',
+      defaults: {
+        name: { value: "Zoom.US Authorization" },
+        fastmqChannel: {value: "master" },
+        fastmqTopic: {value: "refresh" }
+      },
+      credentials: {
+            client_id: {type: String},
+            client_secret: {type: String},
+        },
+      icon: "fa-file-code-o.png",
+      exportable: false,
+      label: function() {
+            if (this.name) {
+                return this.name
+            } else {
+                return this.id
+            }
+        },
+      oneditsave: function() {
+        var trimFields = [
+            "client_id",
+            "client_secret"
+        ];
+        // Just in case any whitespace has crept in with the copy-paste of the fields
+        trimFields.forEach(function(field) {
+            var v = $("#node-config-input-"+field).val();
+            v = v.trim();
+            $("#node-config-input-"+field).val(v);
+
+        });
+    }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="zoom-session">
+    <div class="form-row">
+        <label style="margin-left: 20px;" for="node-config-input-name" >Name</label>
+        <input type="text" id="node-config-input-name"></input>
+    </div>
+    <div class="form-row">
+        <label style="margin-left: 20px;" for="node-config-input-client_id">Client Id</label>
+        <input type="password" id="node-config-input-client_id">
+    </div>
+    <div class="form-row">
+        <label style="margin-left: 20px;" for="node-config-input-client_secret">Client Secret</label>
+        <input type="password" id="node-config-input-client_secret">
+    </div>
+    <div class="form-row">
+        <label style="margin-left: 20px;" for="node-config-input-fastmqChannel">FastMQ Channel</label>
+        <input type="text" id="node-config-input-fastmqChannel">
+    </div>
+    <div class="form-row">
+        <label style="margin-left: 20px;" for="node-config-input-fastmqTopic">FastMQ Topic</label>
+        <input type="text" id="node-config-input-fastmqTopic">
+    </div>
+  </div>
+</script>
+</script>

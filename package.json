@@ -1,0 +1,28 @@
+{
+  "name": "maya-red-zoom",
+  "version": "1.0.0",
+  "description": "Maya Node-RED module to provide scheduling and meeting access features for zoom.us",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/mayahq/maya-red-zoom.git"
+  },
+  "keywords": [
+    "zoom",
+    "scheduling",
+    "schedule",
+    "zoom",
+    "zoom",
+    "automation"
+  ],
+  "author": "@shubham-root",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mayahq/maya-red-zoom/issues"
+  },
+  "homepage": "https://github.com/mayahq/maya-red-zoom#readme",
+  "dependencies": {}
+}
