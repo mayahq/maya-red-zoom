@@ -1,28 +1,29 @@
 {
   "name": "maya-red-zoom",
-  "version": "1.0.0",
-  "description": "Maya Node-RED module to provide scheduling and meeting access features for zoom.us",
+  "version": "v0.0.1",
+  "description": "Maya module to automate zoom",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/mayahq/maya-red-zoom.git"
+    "url": "git+.git"
   },
-  "keywords": [
-    "zoom",
-    "scheduling",
-    "schedule",
-    "zoom",
-    "zoom",
-    "automation"
-  ],
-  "author": "@shubham-root",
-  "license": "MIT",
+  "author": "",
+  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/mayahq/maya-red-zoom/issues"
+    "url": "https://github.com/mayahq/mayadev/issues"
   },
-  "homepage": "https://github.com/mayahq/maya-red-zoom#readme",
-  "dependencies": {}
+  "homepage": "#readme",
+  "dependencies": {
+    "@mayahq/module-sdk": "^0.1.0"
+  },
+  "nodepath": "src/nodes",
+  "nodeRedModuleName": "maya-red-zoom",
+  "node-red": {
+    "nodes": {
+      "zoom-auth": "src/nodes/zoomAuth/zoomAuth.node.js",
+      "create-meeting": "src/nodes/createMeeting/createMeeting.node.js",
+      "list-meetings": "src/nodes/listMeetings/listMeetings.node.js"
+    }
+  }
 }
