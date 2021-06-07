@@ -24,7 +24,7 @@ class ZoomAuth extends Node {
         redOpts: {
             credentials: {
                 access_token: new fields.Credential({type: 'str', password: true}),
-                expiry_date: new fields.Credential({type: 'num', hidden: true}),
+                expiry_date: new fields.Credential({type: 'num'}),
                 referenceId: new fields.Credential({type: 'str', password: true}),
             }
         }

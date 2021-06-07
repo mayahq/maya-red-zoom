@@ -33,7 +33,7 @@ class ListMeetingRegistrants extends Node {
         this.setStatus("PROGRESS", "fetching zoom meeting registrants...");
         var fetch = require("node-fetch"); // or fetch() is native in browsers
         try{
-            let res = await fetch(`https://api.zoom.us/v2/meetings/{meetingId}/registrants?page_size=${pageSize}`, 
+            let res = await fetch(`https://api.zoom.us/v2/meetings/${vals.meetingId}/registrants?page_size=${vals.pageSize}`, 
             {
                 method: "GET",
                 headers: {
