@@ -34,15 +34,19 @@ class CreateMeeting extends Node {
         var fetch = require("node-fetch"); // or fetch() is native in browsers
         try{
             let type = 1;
-            switch(meetingType){
+            switch(vals.meetingType){
                 case 'Instant':
                     type = 1;
+                    break;
                 case 'Scheduled':
                     type = 2;
+                    break;
                 case 'Recurring with no fixed time':
                     type = 3;
+                    break;
                 case 'Recurring with fixed time':
                     type = 8;
+                    break;
             }
             let res = await fetch(`https://api.zoom.us/v2/users/${vals.userId}/meetings`, 
             {

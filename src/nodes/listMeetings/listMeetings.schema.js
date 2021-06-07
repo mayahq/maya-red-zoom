@@ -33,14 +33,9 @@ class ListMeetings extends Node {
         this.setStatus("PROGRESS", "fetching zoom meetings...");
         var fetch = require("node-fetch"); // or fetch() is native in browsers
         try{
-            let res = await fetch(`https://api.zoom.us/v2/users/${vals.userId}/meetings`, 
+            let res = await fetch(`https://api.zoom.us/v2/users/${vals.userId}/meetings?type=${vals.meetingType}&page_size=${vals.pageSize}`, 
             {
                 method: "GET",
-                body:JSON.stringify({
-                    type: vals.meetingType,
-                    page_size: vals.pageSize,
-                    //next_page_token: vals.nextPageToken
-                }),
                 headers: {
                     "Authorization": `Bearer ${this.credentials.session.access_token}`,
                     "Content-Type":"application/json"
