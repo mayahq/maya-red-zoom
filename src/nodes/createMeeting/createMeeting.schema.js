@@ -21,6 +21,9 @@ class CreateMeeting extends Node {
             // 1 - Instant meeting, 2 - Scheduled, 3 - Recurring with no fixed time, 8 - Recurring with fixed time
             meetingType: new fields.Select({ options: ['Instant', 'Scheduled', 'Recurring with no fixed time', 'Recurring with fixed time'], defaultVal: 'Instant' }),
             topic: new fields.Typed({type: 'str', defaultVal: 'New zoom meeting', allowedTypes: ['msg', 'flow', 'global']}),
+            startTime: new fields.Typed({type: 'str', defaultVal: (new Date()).toISOString(), allowedTypes: ['msg', 'flow', 'global']}),
+            timeZone: new fields.Typed({type: 'str', defaultVal: 'Asia/Kolkata', allowedTypes: ['msg', 'flow', 'global']}),
+            duration: new fields.Typed({type: 'num', defaultVal: 40, allowedTypes: ['msg', 'flow', 'global']}),
         },
 
     })
@@ -57,9 +60,9 @@ class CreateMeeting extends Node {
                     type: type,
                     //password,
                     // ** scheduled fields
-                    // start_time,
-                    // duration,
-                    // timezone,
+                    start_time: vals.startTime,
+                    duration: vals.duration,
+                    timezone: vals.timeZone,
                     // ** recurring fields
 
                 }),
