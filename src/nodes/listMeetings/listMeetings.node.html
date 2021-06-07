@@ -1,0 +1,145 @@
+<script type='text/javascript'>
+    RED.nodes.registerType("list-meetings", {
+        category: "Maya Red Zoom",
+        color: "#8BBDD9",
+        defaults: {
+            name: {
+                value: ""
+            },
+            isProfileConfigNode: {
+                value: false
+            },
+            session: {
+                value: "",
+                type: "zoom-auth"
+            },
+            userId: {
+                value: "me"
+            },
+            payloadTypeuserId: {
+                value: "str"
+            },
+            meetingType: {
+                value: "upcoming"
+            },
+            pageSize: {
+                value: "10"
+            },
+            payloadTypepageSize: {
+                value: "num"
+            },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "fa-file-code-o.png",
+        label: function() {
+            return this.name || "list-meetings"
+        },
+        paletteLabel: "list-meetings",
+        exportable: true,
+        oneditprepare: function() {
+            if (this.payloadTypeuserId === null) {
+                if (this.userId === "") {
+                    this.payloadTypeuserId = "date"
+                } else {
+                    this.payloadTypeuserId = "str"
+                }
+            } else if (this.payloadTypeuserId === 'string' || this.payloadTypeuserId === 'none') {
+                this.payloadTypeuserId = "str"
+            }
+
+            $("#node-input-payloadTypeuserId").val(this.payloadTypeuserId)
+            $("#node-input-userId").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypeuserId"),
+                types: ["msg", "flow", "global", "str"]
+            })
+            $("#node-input-userId").typedInput("type", this.payloadTypeuserId)
+
+            const meetingTypeselectFieldValues = ["upcoming", "scheduled", "live"]
+            meetingTypeselectFieldValues.forEach((val) => {
+                $("#node-input-meetingType").append($("<option></option>").attr("value", val).text(val))
+            })
+            $("#node-input-meetingType").val(this.meetingType)
+
+            if (this.payloadTypepageSize === null) {
+                if (this.pageSize === "") {
+                    this.payloadTypepageSize = "date"
+                } else {
+                    this.payloadTypepageSize = "num"
+                }
+            } else if (this.payloadTypepageSize === 'string' || this.payloadTypepageSize === 'none') {
+                this.payloadTypepageSize = "num"
+            }
+
+            $("#node-input-payloadTypepageSize").val(this.payloadTypepageSize)
+            $("#node-input-pageSize").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypepageSize"),
+                types: ["msg", "flow", "global", "num"]
+            })
+            $("#node-input-pageSize").typedInput("type", this.payloadTypepageSize)
+
+        },
+        oneditsave: function() {},
+        oneditcancel: function() {},
+        oneditdelete: function() {},
+        oneditresize: function() {},
+        onpaletteadd: function() {},
+        onpaletteremove: function() {}
+    });
+</script>
+
+<script type="text/html" data-template-name="list-meetings">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" style="width:70%;" placeholder="Name" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-session">session</label>
+        <input type="text" id="node-input-session"></input>
+    </div>
+    <div class="form-row">
+        <label for="node-input-userId">userId</label>
+        <input type="text" id="node-input-userId"></input>
+        <input type="hidden" id="node-input-payloadTypeuserId">
+    </div>
+    <div class="form-row">
+        <label for="node-input-meetingType">meetingType</label>
+        <select type="text" id="node-input-meetingType">
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-pageSize">pageSize</label>
+        <input type="text" id="node-input-pageSize"></input>
+        <input type="hidden" id="node-input-payloadTypepageSize">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="list-meetings">
+    <h2>Description</h2>
+    <p>Query opens tabs based on criteria like URL, muted status</p>
+
+    <h2>Config</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+
+
+    <h2>Outputs</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+</script>

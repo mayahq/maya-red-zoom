@@ -5,20 +5,20 @@ const {
 } = require('@mayahq/module-sdk')
 const ZoomAuth = require("../zoomAuth/zoomAuth.schema");
 
-class ListMeetings extends Node {
+class ListMeetingRegistrants extends Node {
     constructor(node, RED) {
         super(node, RED)
     }
 
     static schema = new Schema({
-        name: 'list-meetings',
-        label: 'list-meetings',
+        name: 'list-meeting-registrants',
+        label: 'list-meeting-registrants',
         category: 'Maya Red Zoom',
         isConfig: false,
         fields: {
             session: new fields.ConfigNode({type: ZoomAuth}),
-            userId: new fields.Typed({type: 'str', defaultVal: 'me', allowedTypes: ['msg', 'flow', 'global']}),
-            meetingType: new fields.Select({ options: ['upcoming','scheduled', 'live'], defaultVal: 'upcoming' }),
+            // convert long to string before storing
+            meetingId: new fields.Typed({type: 'str', defaultVal: '', allowedTypes: ['msg', 'flow', 'global']}),
             pageSize: new fields.Typed({type: 'num', defaultVal: 10, allowedTypes: ['msg', 'flow', 'global']}),
             //nextPageToken: new fields.Typed({type: 'str', defaultVal: '', allowedTypes: ['msg', 'flow', 'global']}),
         },
@@ -30,14 +30,13 @@ class ListMeetings extends Node {
     }
 
     async onMessage(msg, vals) {
-        this.setStatus("PROGRESS", "fetching zoom meetings...");
+        this.setStatus("PROGRESS", "fetching zoom meeting registrants...");
         var fetch = require("node-fetch"); // or fetch() is native in browsers
         try{
-            let res = await fetch(`https://api.zoom.us/v2/users/${vals.userId}/meetings`, 
+            let res = await fetch(`https://api.zoom.us/v2/meetings/{meetingId}/registrants`, 
             {
                 method: "GET",
                 body:JSON.stringify({
-                    type: vals.meetingType,
                     page_size: vals.pageSize,
                     //next_page_token: vals.nextPageToken
                 }),
@@ -61,7 +60,8 @@ class ListMeetings extends Node {
             this.setStatus("ERROR", "error occurred");
             return msg;
         }
+
     }
 }
 
-module.exports = ListMeetings
+module.exports = ListMeetingRegistrants

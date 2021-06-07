@@ -1,0 +1,145 @@
+<script type='text/javascript'>
+    RED.nodes.registerType("create-meeting", {
+        category: "Maya Red Zoom",
+        color: "#8BBDD9",
+        defaults: {
+            name: {
+                value: ""
+            },
+            isProfileConfigNode: {
+                value: false
+            },
+            session: {
+                value: "",
+                type: "zoom-auth"
+            },
+            userId: {
+                value: "me"
+            },
+            payloadTypeuserId: {
+                value: "str"
+            },
+            meetingType: {
+                value: "Instant"
+            },
+            topic: {
+                value: "New zoom meeting"
+            },
+            payloadTypetopic: {
+                value: "str"
+            },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "fa-file-code-o.png",
+        label: function() {
+            return this.name || "create-meeting"
+        },
+        paletteLabel: "create-meeting",
+        exportable: true,
+        oneditprepare: function() {
+            if (this.payloadTypeuserId === null) {
+                if (this.userId === "") {
+                    this.payloadTypeuserId = "date"
+                } else {
+                    this.payloadTypeuserId = "str"
+                }
+            } else if (this.payloadTypeuserId === 'string' || this.payloadTypeuserId === 'none') {
+                this.payloadTypeuserId = "str"
+            }
+
+            $("#node-input-payloadTypeuserId").val(this.payloadTypeuserId)
+            $("#node-input-userId").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypeuserId"),
+                types: ["msg", "flow", "global", "str"]
+            })
+            $("#node-input-userId").typedInput("type", this.payloadTypeuserId)
+
+            const meetingTypeselectFieldValues = ["Instant", "Scheduled", "Recurring with no fixed time", "Recurring with fixed time"]
+            meetingTypeselectFieldValues.forEach((val) => {
+                $("#node-input-meetingType").append($("<option></option>").attr("value", val).text(val))
+            })
+            $("#node-input-meetingType").val(this.meetingType)
+
+            if (this.payloadTypetopic === null) {
+                if (this.topic === "") {
+                    this.payloadTypetopic = "date"
+                } else {
+                    this.payloadTypetopic = "str"
+                }
+            } else if (this.payloadTypetopic === 'string' || this.payloadTypetopic === 'none') {
+                this.payloadTypetopic = "str"
+            }
+
+            $("#node-input-payloadTypetopic").val(this.payloadTypetopic)
+            $("#node-input-topic").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypetopic"),
+                types: ["msg", "flow", "global", "str"]
+            })
+            $("#node-input-topic").typedInput("type", this.payloadTypetopic)
+
+        },
+        oneditsave: function() {},
+        oneditcancel: function() {},
+        oneditdelete: function() {},
+        oneditresize: function() {},
+        onpaletteadd: function() {},
+        onpaletteremove: function() {}
+    });
+</script>
+
+<script type="text/html" data-template-name="create-meeting">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" style="width:70%;" placeholder="Name" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-session">session</label>
+        <input type="text" id="node-input-session"></input>
+    </div>
+    <div class="form-row">
+        <label for="node-input-userId">userId</label>
+        <input type="text" id="node-input-userId"></input>
+        <input type="hidden" id="node-input-payloadTypeuserId">
+    </div>
+    <div class="form-row">
+        <label for="node-input-meetingType">meetingType</label>
+        <select type="text" id="node-input-meetingType">
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-topic">topic</label>
+        <input type="text" id="node-input-topic"></input>
+        <input type="hidden" id="node-input-payloadTypetopic">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="create-meeting">
+    <h2>Description</h2>
+    <p>Query opens tabs based on criteria like URL, muted status</p>
+
+    <h2>Config</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+
+
+    <h2>Outputs</h2>
+    <dl class="message-properties">
+
+        <dt>payload<span class="property-type">various</span></dt>
+        <dd>The configured payload of the message.</dd>
+
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>An optional property</dd>
+
+    </dl>
+</script>
