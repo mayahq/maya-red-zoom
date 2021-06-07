@@ -28,6 +28,24 @@
             payloadTypetopic: {
                 value: "str"
             },
+            startTime: {
+                value: "2021-06-07T11:36:46.089Z"
+            },
+            payloadTypestartTime: {
+                value: "str"
+            },
+            timeZone: {
+                value: "Asia/Kolkata"
+            },
+            payloadTypetimeZone: {
+                value: "str"
+            },
+            duration: {
+                value: "40"
+            },
+            payloadTypeduration: {
+                value: "num"
+            },
         },
         inputs: 1,
         outputs: 1,
@@ -80,6 +98,60 @@
             })
             $("#node-input-topic").typedInput("type", this.payloadTypetopic)
 
+            if (this.payloadTypestartTime === null) {
+                if (this.startTime === "") {
+                    this.payloadTypestartTime = "date"
+                } else {
+                    this.payloadTypestartTime = "str"
+                }
+            } else if (this.payloadTypestartTime === 'string' || this.payloadTypestartTime === 'none') {
+                this.payloadTypestartTime = "str"
+            }
+
+            $("#node-input-payloadTypestartTime").val(this.payloadTypestartTime)
+            $("#node-input-startTime").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypestartTime"),
+                types: ["msg", "flow", "global", "str"]
+            })
+            $("#node-input-startTime").typedInput("type", this.payloadTypestartTime)
+
+            if (this.payloadTypetimeZone === null) {
+                if (this.timeZone === "") {
+                    this.payloadTypetimeZone = "date"
+                } else {
+                    this.payloadTypetimeZone = "str"
+                }
+            } else if (this.payloadTypetimeZone === 'string' || this.payloadTypetimeZone === 'none') {
+                this.payloadTypetimeZone = "str"
+            }
+
+            $("#node-input-payloadTypetimeZone").val(this.payloadTypetimeZone)
+            $("#node-input-timeZone").typedInput({
+                default: "str",
+                typeField: $("#node-input-payloadTypetimeZone"),
+                types: ["msg", "flow", "global", "str"]
+            })
+            $("#node-input-timeZone").typedInput("type", this.payloadTypetimeZone)
+
+            if (this.payloadTypeduration === null) {
+                if (this.duration === "") {
+                    this.payloadTypeduration = "date"
+                } else {
+                    this.payloadTypeduration = "num"
+                }
+            } else if (this.payloadTypeduration === 'string' || this.payloadTypeduration === 'none') {
+                this.payloadTypeduration = "num"
+            }
+
+            $("#node-input-payloadTypeduration").val(this.payloadTypeduration)
+            $("#node-input-duration").typedInput({
+                default: "num",
+                typeField: $("#node-input-payloadTypeduration"),
+                types: ["msg", "flow", "global", "num"]
+            })
+            $("#node-input-duration").typedInput("type", this.payloadTypeduration)
+
         },
         oneditsave: function() {},
         oneditcancel: function() {},
@@ -113,6 +185,21 @@
         <label for="node-input-topic">topic</label>
         <input type="text" id="node-input-topic"></input>
         <input type="hidden" id="node-input-payloadTypetopic">
+    </div>
+    <div class="form-row">
+        <label for="node-input-startTime">startTime</label>
+        <input type="text" id="node-input-startTime"></input>
+        <input type="hidden" id="node-input-payloadTypestartTime">
+    </div>
+    <div class="form-row">
+        <label for="node-input-timeZone">timeZone</label>
+        <input type="text" id="node-input-timeZone"></input>
+        <input type="hidden" id="node-input-payloadTypetimeZone">
+    </div>
+    <div class="form-row">
+        <label for="node-input-duration">duration</label>
+        <input type="text" id="node-input-duration"></input>
+        <input type="hidden" id="node-input-payloadTypeduration">
     </div>
 </script>
 
