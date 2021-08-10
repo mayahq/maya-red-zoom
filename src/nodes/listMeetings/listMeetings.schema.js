@@ -3,7 +3,6 @@ const {
     Schema,
     fields
 } = require('@mayahq/module-sdk')
-const ZoomAuth = require("../zoomAuth/zoomAuth.schema");
 
 class ListMeetings extends Node {
     constructor(node, RED, opts) {

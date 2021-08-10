@@ -25,7 +25,6 @@
   "nodeRedModuleName": "maya-red-zoom",
   "node-red": {
     "nodes": {
-      "zoom-auth": "src/nodes/zoomAuth/zoomAuth.node.js",
       "create-meeting": "src/nodes/createMeeting/createMeeting.node.js",
       "list-meetings": "src/nodes/listMeetings/listMeetings.node.js",
       "list-meeting-registrants": "src/nodes/listMeetingRegistrants/listMeetingRegistrants.node.js"
