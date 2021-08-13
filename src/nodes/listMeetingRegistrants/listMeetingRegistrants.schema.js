@@ -95,6 +95,7 @@ class ListMeetingRegistrants extends Node {
                 return msg;
             }
 		} catch (err) {
+			msg["__isError"] = true;
 			msg.error = err;
 			this.setStatus("ERROR", "error occurred");
 			return msg;
