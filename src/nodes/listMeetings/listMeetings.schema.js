@@ -3,6 +3,7 @@ const {
     Schema,
     fields
 } = require('@mayahq/module-sdk')
+const refresh = require("../../util/refresh");
 const timezoneFix = require('moment-timezone');
 class ListMeetings extends Node {
     constructor(node, RED, opts) {
@@ -25,7 +26,11 @@ class ListMeetings extends Node {
         },
 
     })
-
+	async refreshTokens() {
+        const newTokens = await refresh(this)
+        await this.tokens.set(newTokens)
+        return newTokens
+    }
     onInit() {
         // Do something on initialization of node
     }

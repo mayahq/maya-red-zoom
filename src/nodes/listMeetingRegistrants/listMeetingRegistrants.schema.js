@@ -1,5 +1,5 @@
 const { Node, Schema, fields } = require("@mayahq/module-sdk");
-
+const refresh = require('../../util/refresh');
 class ListMeetingRegistrants extends Node {
 	constructor(node, RED, opts) {
         super(node, RED, {
@@ -28,6 +28,12 @@ class ListMeetingRegistrants extends Node {
 			//nextPageToken: new fields.Typed({type: 'str', defaultVal: '', allowedTypes: ['msg', 'flow', 'global']}),
 		},
 	});
+
+	async refreshTokens() {
+        const newTokens = await refresh(this)
+        await this.tokens.set(newTokens)
+        return newTokens
+    }
 
 	onInit() {
 		// Do something on initialization of node
