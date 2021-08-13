@@ -55,7 +55,7 @@ class ListMeetingRegistrants extends Node {
 					const { access_token } = await this.refreshTokens();
 					if (!access_token) {
 						this.setStatus("ERROR", "Failed to refresh access token");
-						msg.isError = true;
+						msg["__isError"] = true;
 						msg.error = {
 							reason: "TOKEN_REFRESH_FAILED",
 						};
@@ -68,6 +68,7 @@ class ListMeetingRegistrants extends Node {
 					});
 					json = await res.json();
 					if (json.error) {
+						msg["__isError"] = true;
 						msg.error = json.error;
 						this.setStatus("ERROR", json.error.message);
 						return msg;
@@ -77,6 +78,7 @@ class ListMeetingRegistrants extends Node {
 						return msg;
 					}
 				} else {
+					msg["__isError"] = true;
 					msg.error = json.error;
 					this.setStatus("ERROR", json.error.message);
 					return msg;
