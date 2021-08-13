@@ -3,11 +3,12 @@ const {
     Schema,
     fields
 } = require('@mayahq/module-sdk')
-const ZoomAuth = require("../zoomAuth/zoomAuth.schema");
 
 class CreateMeeting extends Node {
-    constructor(node, RED) {
-        super(node, RED)
+    constructor(node, RED, opts) {
+        super(node, RED, {
+            ...opts
+        })
     }
 
     static schema = new Schema({
@@ -15,8 +16,8 @@ class CreateMeeting extends Node {
         label: 'create-meeting',
         category: 'Maya Red Zoom',
         isConfig: false,
+        icon: 'zoom.png',
         fields: {
-            session: new fields.ConfigNode({type: ZoomAuth}),
             userId: new fields.Typed({type: 'str', defaultVal: 'me', allowedTypes: ['msg', 'flow', 'global']}),
             // 1 - Instant meeting, 2 - Scheduled, 3 - Recurring with no fixed time, 8 - Recurring with fixed time
             meetingType: new fields.Select({ options: ['Instant', 'Scheduled', 'Recurring with no fixed time', 'Recurring with fixed time'], defaultVal: 'Instant' }),
@@ -51,10 +52,10 @@ class CreateMeeting extends Node {
                     type = 8;
                     break;
             }
-            let res = await fetch(`https://api.zoom.us/v2/users/${vals.userId}/meetings`, 
-            {
+            const fetchConfig = {
+                url: `https://api.zoom.us/v2/users/${vals.userId}/meetings`,
                 method: "POST",
-                body:JSON.stringify({
+                body: JSON.stringify({
                     topic: vals.topic,
                     //agenda,
                     type: type,
@@ -64,21 +65,57 @@ class CreateMeeting extends Node {
                     duration: vals.duration,
                     timezone: vals.timeZone,
                     // ** recurring fields
-
                 }),
                 headers: {
-                    "Authorization": `Bearer ${this.credentials.session.access_token}`,
+                    "Authorization": `Bearer ${this.tokens.vals.access_token}`,
                     "Content-Type":"application/json"
                 }
+            }
+            let res = await fetch(fetchConfig.url, 
+            {
+                method: fetchConfig.method,
+                body:fetchConfig.body,
+                headers: fetchConfig.headers
             });
             let json = await res.json();
             if(json.error){
-                msg.error = json.error;
-                this.setStatus("ERROR", json.error.message);
-                return msg;
+                if(json.error.code === 401){
+                    const { access_token } = await this.refreshTokens()
+                    if (!access_token) {
+                        this.setStatus('ERROR', 'Failed to refresh access token')
+                        msg["__isError"] = true
+                        msg.error = {
+                            reason: 'TOKEN_REFRESH_FAILED',
+                        }
+                        return msg
+                    }
+                    fetchConfig.headers.Authorization = `Bearer ${access_token}`
+                    res = await fetch(fetchConfig.url, 
+                        {
+                            method: fetchConfig.method,
+                            body:fetchConfig.body,
+                            headers: fetchConfig.headers
+                        });
+                    json = await res.json();
+                    if(json.error){
+                        msg["__isError"] = true
+                        msg.error = json.error;
+                        this.setStatus("ERROR", json.error.message);
+                        return msg;
+                    } else {
+                        msg.payload = json;
+                        this.setStatus("SUCCESS", "Zoom meeting created");
+                        return msg;
+                    }
+                } else {
+                    msg["__isError"] = true;
+                    msg.error = json.error;
+                    this.setStatus("ERROR", json.error.message);
+                    return msg;
+                }
             }
             msg.payload = json;
-            this.setStatus("SUCCESS", "zoom meeting created");
+            this.setStatus("SUCCESS", "Zoom meeting created");
             return msg;
         }
         catch(err){

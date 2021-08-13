@@ -9,10 +9,6 @@
             isProfileConfigNode: {
                 value: false
             },
-            session: {
-                value: "",
-                type: "zoom-auth"
-            },
             userId: {
                 value: "me"
             },
@@ -31,7 +27,7 @@
         },
         inputs: 1,
         outputs: 1,
-        icon: "fa-file-code-o.png",
+        icon: "zoom.png",
         label: function() {
             return this.name || "list-meetings"
         },
@@ -94,10 +90,6 @@
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" style="width:70%;" placeholder="Name" />
-    </div>
-    <div class="form-row">
-        <label for="node-input-session">session</label>
-        <input type="text" id="node-input-session"></input>
     </div>
     <div class="form-row">
         <label for="node-input-userId">userId</label>
