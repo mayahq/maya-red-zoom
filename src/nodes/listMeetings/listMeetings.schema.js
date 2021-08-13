@@ -3,7 +3,7 @@ const {
     Schema,
     fields
 } = require('@mayahq/module-sdk')
-
+const timezoneFix = require('moment-timezone');
 class ListMeetings extends Node {
     constructor(node, RED, opts) {
         super(node, RED, {
@@ -70,6 +70,11 @@ class ListMeetings extends Node {
 						this.setStatus("ERROR", json.error.message);
 						return msg;
 					} else {
+						await json.meetings.map(meet => {
+							let newStartTime = timezoneFix(meet.start_time).tz(meet.timezone).format();
+							meet.start_time = newStartTime;
+							return meet;
+						})
 						msg.payload = json;
 						this.setStatus("SUCCESS", "Fetched Meetings");
 						return msg;
@@ -81,6 +86,11 @@ class ListMeetings extends Node {
 					return msg;
 				}
 			} else {
+				await json.meetings.map(meet => {
+					let newStartTime = timezoneFix(meet.start_time).tz(meet.timezone).format();
+					meet.start_time = newStartTime;
+					return meet;
+				})
                 msg.payload = json;
                 this.setStatus("SUCCESS", "Fetched Meetings");
                 return msg;
