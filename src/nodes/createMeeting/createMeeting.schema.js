@@ -108,7 +108,7 @@ class CreateMeeting extends Node {
 			});
 			let responseStatus = await res.status;
 			let json = await res.json();
-			if (responseStatus !== 200) {
+			if (responseStatus >= 300) {
 				if (responseStatus === 401) {
 					const { access_token } = await this.refreshTokens();
 					if (!access_token) {
@@ -127,10 +127,10 @@ class CreateMeeting extends Node {
 					});
 					responseStatus = await res.status;
 					json = await res.json();
-					if (responseStatus !== 200) {
+					if (responseStatus >= 300) {
 						msg["__isError"] = true;
-						msg.error = json.error;
-						this.setStatus("ERROR", json.error.message);
+						msg.error = json.message;
+						this.setStatus("ERROR", json.message);
 						return msg;
 					} else {
 						msg.payload = json;
@@ -140,7 +140,7 @@ class CreateMeeting extends Node {
 				} else {
 					msg["__isError"] = true;
 					msg.error = json.error;
-					this.setStatus("ERROR", json.error.message);
+					this.setStatus("ERROR", json.message);
 					return msg;
 				}
 			} else {

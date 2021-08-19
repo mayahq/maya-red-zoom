@@ -59,7 +59,7 @@ class ListMeetings extends Node {
 			});
 			let responseStatus = await res.status;
 			let json = await res.json();
-			if (responseStatus !== 200) {
+			if (responseStatus >= 300) {
 				if (responseStatus === 401) {
 					const { access_token } = await this.refreshTokens();
 					if (!access_token) {
@@ -77,7 +77,7 @@ class ListMeetings extends Node {
 					});
 					responseStatus = await res.status;
 					json = await res.json();
-					if (responseStatus !== 200) {
+					if (responseStatus >= 300) {
 						msg["__isError"] = true;
 						msg.error = json.error;
 						this.setStatus("ERROR", json.error.message);
