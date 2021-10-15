@@ -1,11 +1,11 @@
 const { Node, Schema, fields } = require("@mayahq/module-sdk");
-const refresh = require('../../util/refresh');
+const refresh = require("../../util/refresh");
 class ListMeetingRegistrants extends Node {
 	constructor(node, RED, opts) {
-        super(node, RED, {
-            ...opts
-        })
-    }
+		super(node, RED, {
+			...opts,
+		});
+	}
 
 	static schema = new Schema({
 		name: "list-meeting-registrants",
@@ -30,10 +30,10 @@ class ListMeetingRegistrants extends Node {
 	});
 
 	async refreshTokens() {
-        const newTokens = await refresh(this)
-        await this.tokens.set(newTokens)
-        return newTokens
-    }
+		const newTokens = await refresh(this);
+		await this.tokens.set(newTokens);
+		return newTokens;
+	}
 
 	onInit() {
 		// Do something on initialization of node
@@ -55,9 +55,10 @@ class ListMeetingRegistrants extends Node {
 				method: fetchConfig.method,
 				headers: fetchConfig.headers,
 			});
+			let responseStatus = await res.status;
 			let json = await res.json();
-			if (json.error) {
-				if (json.error.code === 401) {
+			if (responseStatus >= 300) {
+				if (responseStatus === 401) {
 					const { access_token } = await this.refreshTokens();
 					if (!access_token) {
 						this.setStatus("ERROR", "Failed to refresh access token");
@@ -72,8 +73,9 @@ class ListMeetingRegistrants extends Node {
 						method: fetchConfig.method,
 						headers: fetchConfig.headers,
 					});
+					responseStatus = await res.status;
 					json = await res.json();
-					if (json.error) {
+					if (responseStatus >= 300) {
 						msg["__isError"] = true;
 						msg.error = json.error;
 						this.setStatus("ERROR", json.error.message);
@@ -90,10 +92,10 @@ class ListMeetingRegistrants extends Node {
 					return msg;
 				}
 			} else {
-                msg.payload = json;
-                this.setStatus("SUCCESS", "Fetched Meeting registrants");
-                return msg;
-            }
+				msg.payload = json;
+				this.setStatus("SUCCESS", "Fetched Meeting registrants");
+				return msg;
+			}
 		} catch (err) {
 			msg["__isError"] = true;
 			msg.error = err;
