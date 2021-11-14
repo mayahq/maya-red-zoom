@@ -1,25 +1,32 @@
-<h2>Description</h2>
-<p>Query opens tabs based on criteria like URL, muted status</p>
+<h2 data-type="description-title">Description</h2>
+<p data-type="description-summary">List Meetings node is used to fetch all scheduled meeting your account is hosting or invited to on Zoom Meetings.</p>
 
-<h2>Config</h2>
+<h2 data-type="input">Config</h2>
 <dl class="message-properties">
 
-    <dt>payload<span class="property-type">various</span></dt>
-    <dd>The configured payload of the message.</dd>
+    <dt>
+        <span class="property-name">userId</span>
+        <span class="property-type">string</span>
+    </dt>
+    <dd>The account user id for the account from which the scheduled meeting list is to be fetched</dd>
 
-    <dt class="optional">topic <span class="property-type">string</span></dt>
-    <dd>An optional property</dd>
-
+    <dt>
+        <span class="property-name">meetingType</span> 
+        <span class="property-type">string</span>
+    </dt>
+    <dd>Mandatory selection option to pick from the type of meetings from upcoming, scheduled or live. Default selection is "upcoming"</dd>
+    <dt>
+        <span class="property-name">pageSize</span>
+        <span class="property-type">num</span>
+    </dt>
+    <dd>Configuration to choose number of meetings to be fetched per call. Defaults to 10.</dd>
 </dl>
 
 
 <h2>Outputs</h2>
 <dl class="message-properties">
 
-    <dt>payload<span class="property-type">various</span></dt>
-    <dd>The configured payload of the message.</dd>
-
-    <dt class="optional">topic <span class="property-type">string</span></dt>
-    <dd>An optional property</dd>
+    <dt>payload<span class="property-type">object</span></dt>
+    <dd>The JSON object response containing meeting </dd>
     
 </dl>

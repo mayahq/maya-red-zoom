@@ -1,14 +1,20 @@
-<h2>Description</h2>
-<p>Query opens tabs based on criteria like URL, muted status</p>
+<h2 data-help="description-title">Description</h2>
+<p data-help="description-summary">Maya node to list of participants invited to a Zoom Meeting</p>
 
 <h2>Config</h2>
 <dl class="message-properties">
 
-    <dt>payload<span class="property-type">various</span></dt>
-    <dd>The configured payload of the message.</dd>
+    <dt>
+        <span class="property-name">meetingId</span>
+        <span class="property-type">various</span>
+    </dt>
+    <dd>Meeting ID value input to select from which meeting to obtain the list of invited participants on Zoom Meeting.</dd>
 
-    <dt class="optional">topic <span class="property-type">string</span></dt>
-    <dd>An optional property</dd>
+    <dt>
+        <span class="property-name">pageSize</span>
+        <span class="property-type">num</span>
+    </dt>
+    <dd>Configuration to choose number of meetings to be fetched per call. Defaults to 10.</dd>
 
 </dl>
 
@@ -16,10 +22,7 @@
 <h2>Outputs</h2>
 <dl class="message-properties">
 
-    <dt>payload<span class="property-type">various</span></dt>
-    <dd>The configured payload of the message.</dd>
-
-    <dt class="optional">topic <span class="property-type">string</span></dt>
-    <dd>An optional property</dd>
+    <dt>payload<span class="property-type">object</span></dt>
+    <dd>The JSON object response containing meeting participants for a selected meeting Id </dd>
     
 </dl>

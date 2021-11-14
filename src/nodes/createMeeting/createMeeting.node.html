@@ -25,7 +25,7 @@
                 value: "str"
             },
             startTime: {
-                value: "2021-08-13T09:26:14.094Z"
+                value: "2021-11-14T06:50:03.171Z"
             },
             payloadTypestartTime: {
                 value: "str"
@@ -196,17 +196,55 @@
 </script>
 
 <script type="text/html" data-help-name="create-meeting">
-    <h2>Description</h2>
-    <p>Query opens tabs based on criteria like URL, muted status</p>
+    <h2 data-type="description-title">Description</h2>
+    <p data-type="description-summary">Maya node to create or schedule a Zoom Meeting on the user account configured with Maya Virtual Assistant app on Zoom Marketplace.</p>
 
     <h2>Config</h2>
     <dl class="message-properties">
 
-        <dt>payload<span class="property-type">various</span></dt>
-        <dd>The configured payload of the message.</dd>
+        <dt>
+            <span class="property-name">userId</span>
+            <span class="property-type">str</span>
+        </dt>
+        <dd>Zoom user Id for the user account on which the meeting is to be created. It is set to 'me' as default for self account.</dd>
 
-        <dt class="optional">topic <span class="property-type">string</span></dt>
-        <dd>An optional property</dd>
+        <dt>
+            <span class="property-name">meetingType</span>
+            <span class="property-type">select str</span>
+        </dt>
+        <dd>Zoom Meetings allow four types of meeting to be created. This configuration allow selection between one of the following
+            <ul>
+                <li>Instant</li>
+                <li>Scheduled</li>
+                <li>Recurring with no fixed time</li>
+                <li>Recurring with fixed time</li>
+            </ul>
+            Default selection is "Instant"
+        </dd>
+
+        <dt>
+            <span class="property-name">topic</span>
+            <span class="property-type">str</span>
+        </dt>
+        <dd>Configuration which sets the title or header for the meeting as read by user and participants</dd>
+
+        <dt>
+            <span class="property-name">startTime</span>
+            <span class="property-type">str</span>
+        </dt>
+        <dd>Time in ISO string format string at which is to be started</dd>
+
+        <dt>
+            <span class="property-name">timeZone</span>
+            <span class="property-type">str</span>
+        </dt>
+        <dd>Timezone in which the meeting is scheduled. Is a required property and to be handled carefully for multi timezone participants of the meeting. Takes the standard string zone/city format. Defaults to local timezone of Maya device on which the node is running</dd>
+
+        <dt>
+            <span class="property-name">duration</span>
+            <span class="property-type">num</span>
+        </dt>
+        <dd>Configuration to set the duration of meeting in minutes</dd>
 
     </dl>
 
@@ -214,11 +252,11 @@
     <h2>Outputs</h2>
     <dl class="message-properties">
 
-        <dt>payload<span class="property-type">various</span></dt>
-        <dd>The configured payload of the message.</dd>
-
-        <dt class="optional">topic <span class="property-type">string</span></dt>
-        <dd>An optional property</dd>
+        <dt>
+            <span class="property-name">payload</span>
+            <span class="property-type">object</span>
+        </dt>
+        <dd>Object containing the Zoom URL for meeting invite</dd>
 
     </dl>
 </script>
