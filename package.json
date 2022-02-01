@@ -28,5 +28,25 @@
       "list-meetings": "src/nodes/listMeetings/listMeetings.node.js",
       "list-meeting-registrants": "src/nodes/listMeetingRegistrants/listMeetingRegistrants.node.js"
     }
+  },
+  "mayaDetails": {
+    "name": "Zoom Module",
+    "version": "0.0.4",
+    "description": "Maya module to access Zoom programmatically.",
+    "author": "dush-t",
+    "type": "git",
+    "needsUserProfile": true,
+    "configType": {
+      "name": "Zoom Authentication",
+      "oid": "61973feb53546c43979f67df"
+    },
+    "thumbnail": "",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/mayahq/maya-red-zoom.git"
+    },
+    "origin": {
+      "moduleId": "618e69c19caba6e380643306"
+    }
   }
 }
