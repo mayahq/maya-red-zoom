@@ -15,7 +15,8 @@
   },
   "homepage": "#readme",
   "dependencies": {
-    "@mayahq/module-sdk": "^0.4.11",
+    "@mayahq/module-sdk": "file:../../module-sdk",
+    "axios": "^0.26.1",
     "crypto": "^1.0.1",
     "moment-timezone": "^0.5.33",
     "node-fetch": "^2.6.1"

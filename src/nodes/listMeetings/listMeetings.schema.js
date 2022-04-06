@@ -1,6 +1,8 @@
 const { Node, Schema, fields } = require("@mayahq/module-sdk");
 const refresh = require("../../util/refresh");
 const timezoneFix = require("moment-timezone");
+const makeRequestWithRefresh = require('../../util/reqWithRefresh')
+
 class ListMeetings extends Node {
 	constructor(node, RED, opts) {
 		super(node, RED, {
@@ -43,9 +45,8 @@ class ListMeetings extends Node {
 
 	async onMessage(msg, vals) {
 		this.setStatus("PROGRESS", "fetching zoom meetings...");
-		var fetch = require("node-fetch"); // or fetch() is native in browsers
 		try {
-			const fetchConfig = {
+			const request = {
 				url: `https://api.zoom.us/v2/users/${vals.userId}/meetings?type=${vals.meetingType}&page_size=${vals.pageSize}`,
 				method: "GET",
 				headers: {
@@ -53,65 +54,20 @@ class ListMeetings extends Node {
 					"Content-Type": "application/json",
 				},
 			};
-			let res = await fetch(fetchConfig.url, {
-				method: fetchConfig.method,
-				headers: fetchConfig.headers,
+			const response = await makeRequestWithRefresh(this, request)
+			const data = response.data
+			await data.meetings.map((meet) => {
+				let newStartTime = timezoneFix(meet.start_time)
+					.tz(meet.timezone)
+					.format();
+				meet.start_time = newStartTime;
+				return meet;
 			});
-			let responseStatus = await res.status;
-			let json = await res.json();
-			if (responseStatus >= 300) {
-				if (responseStatus === 401) {
-					const { access_token } = await this.refreshTokens();
-					if (!access_token) {
-						this.setStatus("ERROR", "Failed to refresh access token");
-						msg["__isError"] = true;
-						msg.error = {
-							reason: "TOKEN_REFRESH_FAILED",
-						};
-						return msg;
-					}
-					fetchConfig.headers.Authorization = `Bearer ${access_token}`;
-					res = await fetch(fetchConfig.url, {
-						method: fetchConfig.method,
-						headers: fetchConfig.headers,
-					});
-					responseStatus = await res.status;
-					json = await res.json();
-					if (responseStatus >= 300) {
-						msg["__isError"] = true;
-						msg.error = json.error;
-						this.setStatus("ERROR", json.error.message);
-						return msg;
-					} else {
-						await json.meetings.map((meet) => {
-							let newStartTime = timezoneFix(meet.start_time)
-								.tz(meet.timezone)
-								.format();
-							meet.start_time = newStartTime;
-							return meet;
-						});
-						msg.payload = json;
-						this.setStatus("SUCCESS", "Fetched Meetings");
-						return msg;
-					}
-				} else {
-					msg["__isError"] = true;
-					msg.error = json.error;
-					this.setStatus("ERROR", json.error.message);
-					return msg;
-				}
-			} else {
-				await json.meetings.map((meet) => {
-					let newStartTime = timezoneFix(meet.start_time)
-						.tz(meet.timezone)
-						.format();
-					meet.start_time = newStartTime;
-					return meet;
-				});
-				msg.payload = json;
-				this.setStatus("SUCCESS", "Fetched Meetings");
-				return msg;
-			}
+
+
+			msg.payload = data
+			this.setStatus("SUCCESS", "Fetched meetings")
+			return msg
 		} catch (err) {
 			msg["__isError"] = true;
 			msg.error = err;
