@@ -1,4 +1,5 @@
 const { Node, Schema, fields } = require("@mayahq/module-sdk");
+const makeRequestWithRefresh = require('../../util/reqWithRefresh')
 const refresh = require("../../util/refresh");
 
 class CreateMeeting extends Node {
@@ -64,8 +65,7 @@ class CreateMeeting extends Node {
 	}
 
 	async onMessage(msg, vals) {
-		this.setStatus("PROGRESS", "creating zoom meeting...");
-		var fetch = require("node-fetch"); // or fetch() is native in browsers
+		this.setStatus("PROGRESS", "Creating zoom meeting");
 		try {
 			let type = 1;
 			switch (vals.meetingType) {
@@ -82,10 +82,21 @@ class CreateMeeting extends Node {
 					type = 8;
 					break;
 			}
-			const fetchConfig = {
+			const request = {
 				url: `https://api.zoom.us/v2/users/${vals.userId}/meetings`,
 				method: "POST",
-				body: JSON.stringify({
+				// body: JSON.stringify({
+				// 	topic: vals.topic,
+				// 	//agenda,
+				// 	type: type,
+				// 	//password,
+				// 	// ** scheduled fields
+				// 	start_time: vals.startTime,
+				// 	duration: vals.duration,
+				// 	timezone: vals.timeZone,
+				// 	// ** recurring fields
+				// }),
+				data: {
 					topic: vals.topic,
 					//agenda,
 					type: type,
@@ -95,63 +106,20 @@ class CreateMeeting extends Node {
 					duration: vals.duration,
 					timezone: vals.timeZone,
 					// ** recurring fields
-				}),
+				},
 				headers: {
 					Authorization: `Bearer ${this.tokens.vals.access_token}`,
-					"Content-Type": "application/json",
 				},
 			};
-			let res = await fetch(fetchConfig.url, {
-				method: fetchConfig.method,
-				body: fetchConfig.body,
-				headers: fetchConfig.headers,
-			});
-			let responseStatus = await res.status;
-			let json = await res.json();
-			if (responseStatus >= 300) {
-				if (responseStatus === 401) {
-					const { access_token } = await this.refreshTokens();
-					if (!access_token) {
-						this.setStatus("ERROR", "Failed to refresh access token");
-						msg["__isError"] = true;
-						msg.error = {
-							reason: "TOKEN_REFRESH_FAILED",
-						};
-						return msg;
-					}
-					fetchConfig.headers.Authorization = `Bearer ${access_token}`;
-					res = await fetch(fetchConfig.url, {
-						method: fetchConfig.method,
-						body: fetchConfig.body,
-						headers: fetchConfig.headers,
-					});
-					responseStatus = await res.status;
-					json = await res.json();
-					if (responseStatus >= 300) {
-						msg["__isError"] = true;
-						msg.error = json.message;
-						this.setStatus("ERROR", json.message);
-						return msg;
-					} else {
-						msg.payload = json;
-						this.setStatus("SUCCESS", "Zoom meeting created");
-						return msg;
-					}
-				} else {
-					msg["__isError"] = true;
-					msg.error = json.error;
-					this.setStatus("ERROR", json.message);
-					return msg;
-				}
-			} else {
-				msg.payload = json;
-				this.setStatus("SUCCESS", "Zoom meeting created");
-				return msg;
-			}
+
+			const response = await makeRequestWithRefresh(this, request)
+			msg.payload = response.data
+			this.setStatus("SUCCESS", "Created Zoom meeting")
+			return msg
 		} catch (err) {
 			msg["__isError"] = true;
 			msg.error = err;
-			this.setStatus("ERROR", "error occurred");
+			this.setStatus("ERROR", err.message);
 			return msg;
 		}
 	}
