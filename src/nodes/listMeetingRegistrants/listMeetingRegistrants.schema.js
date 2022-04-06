@@ -1,5 +1,7 @@
 const { Node, Schema, fields } = require("@mayahq/module-sdk");
 const refresh = require("../../util/refresh");
+const makeRequestWithRefresh = require('../../util/reqWithRefresh')
+
 class ListMeetingRegistrants extends Node {
 	constructor(node, RED, opts) {
 		super(node, RED, {
@@ -29,21 +31,14 @@ class ListMeetingRegistrants extends Node {
 		},
 	});
 
-	async refreshTokens() {
-		const newTokens = await refresh(this);
-		await this.tokens.set(newTokens);
-		return newTokens;
-	}
-
 	onInit() {
 		// Do something on initialization of node
 	}
 
 	async onMessage(msg, vals) {
-		this.setStatus("PROGRESS", "fetching zoom meeting registrants...");
-		var fetch = require("node-fetch"); // or fetch() is native in browsers
+		this.setStatus("PROGRESS", "Fetching zoom meeting registrants...");
 		try {
-			const fetchConfig = {
+			const request = {
 				url: `https://api.zoom.us/v2/meetings/${vals.meetingId}/registrants?page_size=${vals.pageSize}`,
 				method: "GET",
 				headers: {
@@ -51,51 +46,11 @@ class ListMeetingRegistrants extends Node {
 					"Content-Type": "application/json",
 				},
 			};
-			let res = await fetch(fetchConfig.url, {
-				method: fetchConfig.method,
-				headers: fetchConfig.headers,
-			});
-			let responseStatus = await res.status;
-			let json = await res.json();
-			if (responseStatus >= 300) {
-				if (responseStatus === 401) {
-					const { access_token } = await this.refreshTokens();
-					if (!access_token) {
-						this.setStatus("ERROR", "Failed to refresh access token");
-						msg["__isError"] = true;
-						msg.error = {
-							reason: "TOKEN_REFRESH_FAILED",
-						};
-						return msg;
-					}
-					fetchConfig.headers.Authorization = `Bearer ${access_token}`;
-					res = await fetch(fetchConfig.url, {
-						method: fetchConfig.method,
-						headers: fetchConfig.headers,
-					});
-					responseStatus = await res.status;
-					json = await res.json();
-					if (responseStatus >= 300) {
-						msg["__isError"] = true;
-						msg.error = json.error;
-						this.setStatus("ERROR", json.error.message);
-						return msg;
-					} else {
-						msg.payload = json;
-						this.setStatus("SUCCESS", "Fetched Meeting registrants");
-						return msg;
-					}
-				} else {
-					msg["__isError"] = true;
-					msg.error = json.error;
-					this.setStatus("ERROR", json.error.message);
-					return msg;
-				}
-			} else {
-				msg.payload = json;
-				this.setStatus("SUCCESS", "Fetched Meeting registrants");
-				return msg;
-			}
+
+			const response = await makeRequestWithRefresh(this, request)
+			msg.payload = response.data
+			this.setStatus("SUCCESS", "Fetched")
+			return msg
 		} catch (err) {
 			msg["__isError"] = true;
 			msg.error = err;
